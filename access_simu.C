@@ -31,7 +31,7 @@ int main()
 {
 
     TFile* hfile = new TFile("simu_crao.root","OPEN");
-    TFile* hfile_out = new TFile("simu_crao_out.root","RECREATE");
+    TFile* hfile_out = new TFile("simu_crao_out_bis.root","RECREATE");
     
     TTree *Singles 	= (TTree*)hfile->Get("tree");
     cout << "Tree " << Singles -> GetName() << endl;

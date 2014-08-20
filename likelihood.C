@@ -31,9 +31,10 @@ using namespace std;
 
 int main()
 {
-
-    TFile* hfile = new TFile("/media/Elements/temp/simu_0_10000.root","OPEN");
-    TFile* hfile_out = new TFile("/media/Elements/temp/simu_0_10000_out.root","RECREATE");
+  
+  
+    TFile* hfile = new TFile("/media/Elements/temp/simu_0_4000.root","OPEN");
+    TFile* hfile_out = new TFile("/media/Elements/temp/simu_0_4000_out.root","RECREATE");
     
     TTree *Singles 	= (TTree*)hfile->Get("tree");
     cout << "Tree " << Singles -> GetName() << endl;
@@ -60,6 +61,36 @@ int main()
     double max = 1000e-9;
     int nbins = 1000000;
     int order = 100;
+    
+    double LY = 5000;
+    double CY = 20;
+    double a = LY / CY * (1. / (1 + LY / CY));
+    double b = 1 / (1 + LY / CY);
+    
+    double theta = 1000e-12;
+    
+    double t_d = 30.3e-9; // rise time 2
+    double t_r = 70e-12; //decay time 5
+
+    double s = 66e-12; // sigma trans 1 / 3
+    double tsk = 2e-9; // 3 / 0
+    
+    double l = 10e-12; // cerenkov sigma 2   
+    double cer_min = theta; 
+    double cer_mean = theta + 2* l;
+    
+    double norm_c 	= 1. / (l * sqrt(TMath::Pi() / 2) * (1 + TMath::Erf((cer_mean - cer_min) / sqrt(2) / l))); 
+    double norm_irf	= 1. / (s * sqrt(TMath::Pi() / 2) * (1 + TMath::Erf(tsk / sqrt(2) / s)));
+    double norm_s 	= 1. / (t_d-t_r) ; //normalization shao 4
+
+    double norm_irf_easy = 1. / (s * sqrt(TMath::Pi() / 2) * (1 + TMath::Erf((tsk + cer_mean) / sqrt(2) / s)));
+        
+    //----------------- Cumulative total ------------------------//
+    
+    TF1 *CTot = new TF1("CTot", "[7] * [0] * sqrt(TMath::Pi() / 2) * [3] * (TMath::Erf((x-[2]-[6])/([3]*sqrt(2))) + TMath::Erf(([2]+[6])/([3]*sqrt(2)))) + [8] * [0]*[3]*sqrt(TMath::Pi()/2)*((TMath::Erf((x-[1]-[2])/[3]/sqrt(2))+TMath::Erf([2]/[3]/sqrt(2)))+([4]/([5]-[4])*TMath::Exp((-2*x*[4]+2*[4]*[1]+2*[4]*[2]+[3]*[3])/2/[4]/[4])*(TMath::Erf((x-[1]-[2]-[3]*[3]/[4])/([3]*sqrt(2)))+TMath::Erf(([2]+[3]*[3]/[4])/[3]/sqrt(2))))-([5]/([5]-[4])*TMath::Exp((-2*x*[5]+2*[5]*[1]+2*[5]*[2]+[3]*[3])/2/[5]/[5]) * (TMath::Erf((x-[1]-[2]-[3]*[3]/[5])/[3]/sqrt(2))+TMath::Erf(([2]+[3]*[3]/[5])/[3]/sqrt(2)))))", min, max);
+    CTot -> SetNpx(10000000);    
+    CTot -> SetParameters(norm_irf, theta, tsk, s, t_r, t_d, cer_mean, b, a);
+    CTot -> SetLineColor(kGreen);
     
     vector<TH1D* >* n_photon_shao		= new vector<TH1D* >();
     vector<TH1D* >* n_photon_shao_smear	= new vector<TH1D* >();
