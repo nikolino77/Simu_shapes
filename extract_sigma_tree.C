@@ -67,24 +67,24 @@ int main()
     double min = 0.;
     double max = 1000e-9;
     int nbins = 1000000;
-    int order = 1;
+    int order = 10;
     
     TTree *tree_sigma = new TTree("tree_sigma", "extract_sigma");
     
     TH1D* n_photon_shao_ex = new TH1D("n_photon_shao_ex","n_photon_shao_ex",nbins, min, max);
-    tree_sigma -> Branch("n_photon_shao_ex",n_photon_shao_ex);
+    tree_sigma -> Branch("n_photon_shao_ex",&n_photon_shao_ex);
     
     TH1D* n_photon_shao_smear_ex = new TH1D("n_photon_shao_ex","n_photon_shao_smear_ex",nbins, min, max);
-    tree_sigma -> Branch("n_photon_shao_smear_ex",n_photon_shao_smear_ex);
+    tree_sigma -> Branch("n_photon_shao_smear_ex",&n_photon_shao_smear_ex);
     
     TH1D* n_photon_conv_ex = new TH1D("n_photon_conv_ex","n_photon_conv_ex",nbins, min, max);
-    tree_sigma -> Branch("n_photon_conv_ex",n_photon_conv_ex);
+    tree_sigma -> Branch("n_photon_conv_ex",&n_photon_conv_ex);
     
     TH1D* n_photon_sum_ex = new TH1D("n_photon_sum_ex","n_photon_sum_ex",nbins, min, max);
-    tree_sigma -> Branch("n_photon_sum_ex",n_photon_sum_ex);
+    tree_sigma -> Branch("n_photon_sum_ex",&n_photon_sum_ex);
     
     TH1D* n_photon_sum_smear_ex = new TH1D("n_photon_sum_smear_ex","n_photon_sum_smear_ex",nbins, min, max);
-    tree_sigma -> Branch("n_photon_sum_smear_ex",n_photon_sum_smear_ex);
+    tree_sigma -> Branch("n_photon_sum_smear_ex",&n_photon_sum_smear_ex);
     
     for(int j = 0; j < order; j++)
     {
