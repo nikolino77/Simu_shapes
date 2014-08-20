@@ -67,12 +67,14 @@ int main()
     double norm_irf	= 1. / (s * sqrt(TMath::Pi() / 2) * (1 + TMath::Erf(tsk / sqrt(2) / s)));
     double norm_s 	= 1. / (t_d-t_r) ; //normalization shao 4
   
-    out << "File name: "<< root	<< endl;
+    out << "File name: " << root	<< endl;
     out << "Min: " 	 << min 	<< endl;
     out << "Max: " 	 << max 	<< endl; 
-    out << "N_trials: " << n_trials 	<< endl;
+    out << "N_trials: "  << n_trials 	<< endl;
     out << "LY: " 	 << LY 		<< endl;
     out << "CY: " 	 << CY 		<< endl;
+    out << "a: "	 << a		<< endl;
+    out << "b: "	 << b		<< endl;
     out << "theta: " 	 << theta 	<< endl;
     out << "t_d: " 	 << t_d 	<< endl;
     out << "t_r: " 	 << t_r 	<< endl;
@@ -80,7 +82,7 @@ int main()
     out << "tsk: " 	 << tsk 	<< endl;
     out << "l: " 	 << l		<< endl;
     out << "cer_min: " 	 << cer_min	<< endl;
-    out << "cer_mean: " << cer_mean	<< endl;
+    out << "cer_mean: "  << cer_mean	<< endl;
     out.close();
     
     TF1 *shao = new TF1("shao", "(x>[3])*[0]*(exp(-(x-[3])/[1])-exp(-(x-[3])/[2]))", min, max);
@@ -189,6 +191,9 @@ int main()
     conv_last	-> Write();
     sum		-> Write();
     shao	-> Write();
+    shao_smear	-> Write();
+    cer		-> Write();
+    cer_smear	-> Write();
     irf		-> Write();
     tree	-> Write();
       

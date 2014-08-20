@@ -35,6 +35,14 @@ int main()
     TFile* hfile = new TFile("/media/Elements/temp/simu_0_10000.root","OPEN");
     TFile* hfile_out = new TFile("/media/Elements/temp/simu_0_10000_out.root","RECREATE");
     
+    TF1* shao = (TF1*)hfile->Get("shao");
+    //TF1* shao_smear = (TF1*)hfile->Get("shao_smear");
+    //TF1* cer = (TF1*)hfile->Get("cer");
+    //TF1* cer_smear = (TF1*)hfile->Get("cer_smear");
+    TF1* sum = (TF1*)hfile->Get("sum");
+    TF1* conv_last = (TF1*)hfile->Get("conv_last");
+    TF1* irf = (TF1*)hfile->Get("irf");
+    
     TTree *Singles 	= (TTree*)hfile->Get("tree");
     cout << "Tree " << Singles -> GetName() << endl;
     
@@ -59,10 +67,10 @@ int main()
     double min = 0.;
     double max = 1000e-9;
     int nbins = 1000000;
-    int order = 100;
+    int order = 0;
     
     vector<TH1D* >* n_photon_shao		= new vector<TH1D* >();
-    vector<TH1D* >* n_photon_shao_smear	= new vector<TH1D* >();
+    vector<TH1D* >* n_photon_shao_smear		= new vector<TH1D* >();
     vector<TH1D* >* n_photon_conv		= new vector<TH1D* >();
     vector<TH1D* >* n_photon_sum		= new vector<TH1D* >();
     vector<TH1D* >* n_photon_sum_smear		= new vector<TH1D* >();
@@ -86,7 +94,7 @@ int main()
     }
 
     
-    for(int i = 0; i < 100000; i++)
+    for(int i = 0; i < 0; i++)
     {
       if(i%500 == 0)
       {
@@ -135,15 +143,16 @@ int main()
     mg	-> Add(var_conv,"lp");
     mg	-> Add(var_sum,"lp");
     mg	-> Add(var_sum_smear, "lp");
-    mg 	-> Draw("a");
+    //mg 	-> Draw("a");
     
     hfile_out -> cd();
 
-    n_photon_shao		-> at(0) -> Write();
-    n_photon_shao_smear		-> at(0) -> Write();
-    n_photon_conv		-> at(0) -> Write();
-    n_photon_sum		-> at(0) -> Write();
-    n_photon_sum_smear		-> at(0) -> Write();
+    //n_photon_shao		-> at(0) -> Write();
+    //n_photon_shao_smear		-> at(0) -> Write();
+    //n_photon_conv		-> at(0) -> Write();
+    //n_photon_sum		-> at(0) -> Write();
+    //n_photon_sum_smear		-> at(0) -> Write();
+    
     mg 			-> Write();
     var_shao 		-> Write();
     var_shao_smear 	-> Write();
@@ -151,6 +160,21 @@ int main()
     var_sum 		-> Write();
     var_sum_smear 	-> Write();
 
+    shao 	-> Write();
+    //shao_smear  -> Write();
+    //cer	  -> Write();
+    //cer_smear	  -> Write();
+    sum		-> Write();
+    conv_last	-> Write();
+    irf		-> Write();
+
+    gDirectory->WriteObject(n_photon_shao,"n_photon_shao");
+    //n_photon_shao -> at(j) -> GetRMS());
+    //n_photon_shao_smear	-> at(j) -> GetRMS());
+    //n_photon_conv-> at(j) -> GetRMS());
+    //n_photon_sum-> at(j) -> GetRMS());
+    //n_photon_sum_smear-> at(j) -> GetRMS());   
+   hfile_out -> Write();
     hfile_out -> Close();
      
     return 0;
