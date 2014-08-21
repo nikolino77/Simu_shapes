@@ -67,7 +67,7 @@ int main()
     double min = 0.;
     double max = 1000e-9;
     int nbins = 1000000;
-    int order = 10;
+    int order = 100;
     
     TTree *tree_sigma = new TTree("tree_sigma", "extract_sigma");
     
@@ -88,13 +88,9 @@ int main()
     
     for(int j = 0; j < order; j++)
     {
-      for(int i = 0; i < 100; i++)
+            std::cout << "Evento " << j << std::endl;
+      for(int i = 0; i < nentries; i++)
       {
-        if(i%500 == 0)
-        {
-          std::cout << "Evento " << i << std::endl;
-        }
-      
         Singles->GetEntry(i);
           cout << shao_stamps -> at(j) << endl;
           n_photon_shao_ex	->	Fill(shao_stamps -> at (j));
