@@ -106,6 +106,14 @@ int main()
     
     hfile_out -> cd();
     tree_sigma -> Write();
+    shao -> Write();
+    //shao_smear -> Write();
+    //cer -> Write();
+    //cer_smear -> Write();
+    sum -> Write();
+    conv_last -> Write();
+    irf -> Write();
+    
     hfile_out -> Close();
      
     return 0;
