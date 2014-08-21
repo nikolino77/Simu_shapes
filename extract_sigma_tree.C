@@ -72,7 +72,7 @@ int main()
     TTree *tree_out = new TTree("tree_out", "simu_crao_out");
     
     vector<TH1D* >* n_photon_shao		= new vector<TH1D* >();
-    tree -> Branch("n_photon_shao",n_photon_shao);
+    tree_out -> Branch("n_photon_shao",&n_photon_shao);
     
     
     // vector<TH1D* >* n_photon_shao		= new vector<TH1D* >();
