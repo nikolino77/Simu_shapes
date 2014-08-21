@@ -92,6 +92,7 @@ int main()
       for(int i = 0; i < nentries; i++)
       {
         Singles->GetEntry(i);
+          cout << i << endl;
           n_photon_shao_ex	->	Fill(shao_stamps -> at (j));
         n_photon_shao_smear_ex->	Fill(shao_smear_stamps -> at (j));
         n_photon_conv_ex	->	Fill(conv_stamps -> at (j));
