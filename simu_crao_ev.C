@@ -38,9 +38,17 @@ int main(int argc,char** argv)
     double l	= atof(argv[6]);
     double res	= atof(argv[7]);
     
+    string sLY 		= argv[1];
+    string sCY 		= argv[2];
+    string st_d 	= argv[3];
+    string st_r 	= argv[4];
+    string ss 		= argv[5];
+    string sl 		= argv[6];
+    string sres 	= argv[7];
+    
     string path_sim("./sim");
     string path_dat("./dat");
-    string filename 	= "_" + LY + "_" + CY + "_" + t_d + "_" + t_r + "_" + s + "_" + l + "_" + res;
+    string filename 	= "_" + sLY + "_" + sCY + "_" + st_d + "_" + st_r + "_" + ss + "_" + sl + "_" + sres;
     string root		= path_sim + filename + ".root";
     string dat 		= path_dat + filename + ".txt";
 	
