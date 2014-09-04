@@ -30,8 +30,8 @@ using namespace std;
 
 int main()
 {
-    string name("simu_0_10000");
-    string path("/media/Elements/temp/");
+    string name("simu_5_10000");
+    string path("./out_");
     string root = path + name + ".root";
     string dat = path + name + ".txt";
 	
@@ -42,9 +42,10 @@ int main()
     double min = 0.;
     double max = 1000e-9;
     int n_trials = 100000;
+    int order = 100;
     
     double LY = 10000;
-    double CY = 15;
+    double CY = 5;
     //double a = LY / CY * (1. / (1 + LY / CY));
     //double b = 1 / (1 + LY / CY);
     
@@ -130,32 +131,22 @@ int main()
     TF1 *pois = new TF1("pois", "TMath::PoissonI(x, [0])", 0, 100000);
     pois -> SetNpx(1000000);
     pois -> SetParameter(0, LY+CY);
-
-    TTree *tree = new TTree("tree", "simu_crao");
     
     vector<double >* shao_stamps = new vector<double>();
-    tree -> Branch("shao_stamps",shao_stamps);
-
-    vector<double >* shao_smear_stamps = new vector<double>();
-    tree -> Branch("shao_smear_stamps",shao_smear_stamps);
-    
-    vector<double >* conv_stamps = new vector<double>();
-    tree -> Branch("conv_stamps",conv_stamps);
-    
-    vector<double >* sum_stamps = new vector<double>();
-    tree -> Branch("sum_stamps",sum_stamps);
-    
+    vector<double >* shao_smear_stamps = new vector<double>();   
+    vector<double >* conv_stamps = new vector<double>();   
+    vector<double >* sum_stamps = new vector<double>();  
     vector<double >* sum_smear_stamps = new vector<double>();
-    tree -> Branch("sum_smear_stamps",sum_smear_stamps);
     
     TRandom3* rand = new TRandom3();
-  
     
-    vector<TH1D* >* n_photon_shao		= new vector<TH1D* >();
-    vector<TH1D* >* n_photon_shao_smear	= new vector<TH1D* >();
-    vector<TH1D* >* n_photon_conv		= new vector<TH1D* >();
-    vector<TH1D* >* n_photon_sum		= new vector<TH1D* >();
-    vector<TH1D* >* n_photon_sum_smear		= new vector<TH1D* >();
+    int nbins = 1000000;
+    vector<TH1F* >* n_photon_shao		= new vector<TH1F* >();
+    vector<TH1F* >* n_photon_shao_smear	= new vector<TH1F* >();
+    vector<TH1F* >* n_photon_conv		= new vector<TH1F* >();
+    vector<TH1F* >* n_photon_sum		= new vector<TH1F* >();
+    vector<TH1F* >* n_photon_sum_smear		= new vector<TH1F* >();
+    
     
     for(int j = 0; j < order; j++)
     {
@@ -168,11 +159,11 @@ int main()
       string histo_name_sum 		= "sum_photon_" + num;
       string histo_name_sum_smear 	= "sum_smear_photon_" + num;
 
-      n_photon_shao		-> push_back(new TH1D(histo_name_shao.c_str(),histo_name_shao.c_str(),nbins,min,max));    
-      n_photon_shao_smear	-> push_back(new TH1D(histo_name_shao_smear.c_str(),histo_name_shao_smear.c_str(),nbins,min,max));    
-      n_photon_conv		-> push_back(new TH1D(histo_name_conv.c_str(),histo_name_conv.c_str(),nbins,min,max));    
-      n_photon_sum		-> push_back(new TH1D(histo_name_sum.c_str(),histo_name_sum.c_str(),nbins,min,max));    
-      n_photon_sum_smear	-> push_back(new TH1D(histo_name_sum_smear.c_str(),histo_name_sum_smear.c_str(),nbins,min,max));         
+      n_photon_shao		-> push_back(new TH1F(histo_name_shao.c_str(),histo_name_shao.c_str(),nbins,min,max));    
+      n_photon_shao_smear	-> push_back(new TH1F(histo_name_shao_smear.c_str(),histo_name_shao_smear.c_str(),nbins,min,max));    
+      n_photon_conv		-> push_back(new TH1F(histo_name_conv.c_str(),histo_name_conv.c_str(),nbins,min,max));    
+      n_photon_sum		-> push_back(new TH1F(histo_name_sum.c_str(),histo_name_sum.c_str(),nbins,min,max));    
+      n_photon_sum_smear	-> push_back(new TH1F(histo_name_sum_smear.c_str(),histo_name_sum_smear.c_str(),nbins,min,max));         
     }
     
   
@@ -205,7 +196,14 @@ int main()
       std::sort(sum_stamps -> begin(), sum_stamps -> end());
       std::sort(sum_smear_stamps -> begin(), sum_smear_stamps -> end());
 
-      tree -> Fill();
+      for(int j = 0; j < mi_1; j++)
+      {
+	n_photon_shao		-> at(j) -> Fill(shao_stamps -> at (j));
+	n_photon_shao_smear	-> at(j) -> Fill(shao_smear_stamps -> at (j));
+	n_photon_conv		-> at(j) -> Fill(conv_stamps -> at (j));
+	n_photon_sum		-> at(j) -> Fill(sum_stamps -> at (j));
+	n_photon_sum_smear	-> at(j) -> Fill(sum_smear_stamps -> at (j));	
+      }
 
       shao_stamps 	-> clear();
       conv_stamps 	-> clear();
@@ -214,15 +212,15 @@ int main()
       sum_smear_stamps 	-> clear();
     }
     
-    conv_last	-> Write();
-    sum		-> Write();
-    shao	-> Write();
-    shao_smear	-> Write();
-    cer		-> Write();
-    cer_smear	-> Write();
-    irf		-> Write();
-    tree	-> Write();
-      
+    for(int j = 0; j < order; j++)
+    {
+      n_photon_shao		-> at(j) -> Write();
+      n_photon_shao_smear	-> at(j) -> Write();
+      n_photon_conv		-> at(j) -> Write();
+      n_photon_sum		-> at(j) -> Write();
+      n_photon_sum_smear	-> at(j) -> Write();	
+    }
+       
 //     TH1F* hshao = new TH1F("hshao", "hshao", 200000, min,max);
 //     TH1F* hshao_smear = new TH1F("hshao_smear", "hshao_smear", 200000,min,max);
 //     TH1F* hconv = new TH1F("hconv", "hconv", 200000, min,max);
