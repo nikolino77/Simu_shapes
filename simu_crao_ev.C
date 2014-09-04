@@ -39,7 +39,7 @@ int main(int argc,char** argv)
     double res	= atof(argv[7]);
     
     string path_sim("./sim");
-    string path_dat("./dat")
+    string path_dat("./dat");
     string filename 	= "_" + LY + "_" + CY + "_" + t_d + "_" + t_r + "_" + s + "_" + l + "_" + res;
     string root		= path_sim + filename + ".root";
     string dat 		= path_dat + filename + ".txt";
