@@ -28,12 +28,21 @@
 
 using namespace std;
 
-int main()
+int main(int argc,char** argv)
 {
-    string name("simu_5_10000");
-    string path("./out_");
-    string root = path + name + ".root";
-    string dat = path + name + ".txt";
+    double LY 	= atoi(argv[1]);
+    double CY 	= atoi(argv[2]);
+    double t_d 	= atof(argv[3]);
+    double t_r	= atof(argv[4]);
+    double s	= atof(argv[5]);
+    double l	= atof(argv[6]);
+    double res	= atof(argv[7]);
+    
+    string path_sim("./sim");
+    string path_dat("./dat")
+    string filename 	= "_" + LY + "_" + CY + "_" + t_d + "_" + t_r + "_" + s + "_" + l + "_" + res;
+    string root		= path_sim + filename + ".root";
+    string dat 		= path_dat + filename + ".txt";
 	
     TFile* hfile = new TFile(root.c_str(),"RECREATE");
     ofstream out;
@@ -44,23 +53,16 @@ int main()
     int n_trials = 100000;
     int order = 100;
     
-    double LY = 10000;
-    double CY = 5;
-    //double a = LY / CY * (1. / (1 + LY / CY));
-    //double b = 1 / (1 + LY / CY);
+    double a = LY / CY * (1. / (1 + LY / CY));
+    double b = 1 / (1 + LY / CY);
     
-    double a = 1.;
-    double b = 0;
+    //double a = 1.;
+    //double b = 0;
     
     double theta = 1000e-12;
     
-    double t_d = 30.3e-9; // rise time 2
-    double t_r = 70e-12; //decay time 5
-
-    double s = 66e-12; // sigma trans 1 / 3
     double tsk = 2e-9; // 3 / 0
     
-    double l = 10e-12; // cerenkov sigma 2   
     double cer_min = theta; 
     double cer_mean = theta + 2* l;
     
@@ -83,7 +85,9 @@ int main()
     out << "tsk: " 	 << tsk 	<< endl;
     out << "l: " 	 << l		<< endl;
     out << "cer_min: " 	 << cer_min	<< endl;
-    out << "cer_mean: "  << cer_mean	<< endl;
+    out << "cer_mean: " << cer_mean	<< endl;
+    out << "res: "  	 << res		<< endl;
+	
     out.close();
     
     TF1 *shao = new TF1("shao", "(x>[3])*[0]*(exp(-(x-[3])/[1])-exp(-(x-[3])/[2]))", min, max);
@@ -128,9 +132,9 @@ int main()
     conv_last -> SetLineColor(kBlack);
     cout << "Integral conv_last = " << conv_last -> Integral(min, 400e-009) << endl;
   
-    TF1 *pois = new TF1("pois", "TMath::PoissonI(x, [0])", 0, 100000);
-    pois -> SetNpx(1000000);
-    pois -> SetParameter(0, LY+CY);
+    TF1 *gaus = new TF1("gaus", "TMath::Gaus(x, [0], [1])", 0, 100000);
+    gaus -> SetNpx(1000000);
+    gaus -> SetParameters(LY + CY, (LY + CY) * res / 2.355);
     
     vector<double >* shao_stamps = new vector<double>();
     vector<double >* shao_smear_stamps = new vector<double>();   
@@ -174,8 +178,16 @@ int main()
         std::cout << "Evento " << i << std::endl;
       }
       
-      //int mi_1 = pois -> GetRandom();
-      int mi_1 = LY+CY;
+      int mi_1;
+      if(res == 0)
+      {
+	mi_1 = LY+CY;
+      }
+      else
+      {
+        mi_1 = gaus -> GetRandom();
+      }
+      
       for(int j = 0; j < mi_1; j++)
       {
 	double shao_extr = shao 	-> GetRandom();
