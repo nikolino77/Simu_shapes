@@ -216,7 +216,7 @@ int main(int argc,char** argv)
       std::sort(sum_stamps -> begin(), sum_stamps -> end());
       std::sort(sum_smear_stamps -> begin(), sum_smear_stamps -> end());
 
-      for(int j = 0; j < mi_1; j++)
+      for(int j = 0; j < order; j++)
       {
 	n_photon_shao		-> at(j) -> Fill(shao_stamps -> at (j));
 	n_photon_shao_smear	-> at(j) -> Fill(shao_smear_stamps -> at (j));
